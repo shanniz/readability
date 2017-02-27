@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Shan-Dav Readability - User</title>
+ 
+    <script type="text/javascript" src="../static/js/jquery-3.1.1.min.js"></script>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills ">
+                    <li role="presentation" class="active"><a href="../main">Home</a> </li>
+                    <!--<li role="presentation"><a href="#">Users</a> </li>-->
+                    <li role="presentation"><a href="showReadability">Readability</a> </li>
+                    <li role="presentation"><a href="showSignIn">Signin</a> </li>
+                    <li role="presentation"><a href="showSignUp">Signup</a> </li>
+                    
+                </ul>
+            </nav>
+            <h2> Shan-Dav Readability Score </h2>
+        </div>
+ 
+        <div class="jumbotron">
+            <h3 id="user_name"> {% if username %} {{ username }}  {% endif %} </h3>
+            <h3 id="readability_score">  {{readability}} </h3>
+        </div>
+ 
+        <div>
+            <form class=""> 
+                <input type="hidden" name="user_name" value={{ username }} />
+                <textarea rows="7" cols="70" name="test_text" id="test_text" > </textarea>
+                <br><br>
+                <button id="get_score" class="btn  btn-primary ">Get readability</button>    
+            </form>
+            
+        </div>
+      
+        <div>
+            <h3>Vocabulary</h3>
+            <table class="table table-hover">
+                <thead >
+                    <tr>
+                        <th>SNO</th>
+                        <th>Word</th>
+                        <th>POS<th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set foo=0 %}
+                    {% for word in learnerVocab %}
+                        {% set foo = foo+1 %}
+                        <tr>
+                        <td>{{foo }}</td>
+                        <td>{{ word }}</td>
+                        <td></td>
+                        </tr>
+                      {% endfor %}
+                </tbody>
+            </table>
+            
+
+            <br>
+            <h3>Grammar</h3>
+
+            <table class="table table-hover">
+                <thead >
+                    <tr>
+                        <th>SNO</th>
+                        <th>Grammar Structure</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set foo=0 %}
+                    {% for structure in learnerGrammar %}
+                       {% set foo = foo+1 %}
+                        <tr>
+                        <td>{{foo }}</td>
+                        <td>{{structure}}</td>
+                        
+                        </tr>
+                      {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; Shan-Dav @ BIT</p>
+        </footer>
+ 
+    </div>
+
+
+    <script type="text/javascript">
+
+        var populateList = function(lstId, usersArr){
+            var lst = $('#'+lstId);
+            lst.children().remove();
+            for (var li in usersArr){
+                lst.append('<li><a href="/user/messages"><span class="tab">' + usersArr[li] +' </span></a></li>');
+            }
+            
+        }
+
+        $(function () {
+            //$('form').bind('click', function (event) {
+            $('form').on('submit', function (event) {
+
+              event.preventDefault();// using this page stop being refreshing 
+
+              $.ajax({
+                type: 'POST',
+                url: '/readability/api1.0/user_readability',
+                data: $('form').serialize(),
+                success: function(response) {
+                        console.log(response);
+                        $('#readability_score').text(response.score[0]);
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+              });
+
+            });
+        });
+
+        /*
+        $(function() {
+            $('#get_score').click(function() {
+                $.ajax({
+                    url: '/readability/api1.0/user_readability',
+                    //data: $('form').serialize(),
+                    data: $('#test_text')[0].value,
+                    type: 'POST',
+                    success: function(response) {
+                        console.log(response);
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        }); */
+        
+
+		var btn = document.getElementById('get_score');
+		btn.onClick = function(){
+			alert('getting readability');
+		}
+	</script>
+	 
+</body>
+ 
+</html>

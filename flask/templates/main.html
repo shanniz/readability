@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Shan-Dav Readability</title>
+ 
+    <script type="text/javascript" src="../static/js/jquery-3.1.1.min.js"></script>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills ">
+                    <li role="presentation" class="active"><a href="#">Home</a> </li>
+                    <!--<li role="presentation"><a href="#">Users</a> </li>-->
+                    <li role="presentation"><a href="showReadability">Readability</a> </li>
+                    <li role="presentation"><a href="showSignIn">Signin</a> </li>
+                    <li role="presentation"><a href="showSignUp">Signup</a> </li>
+                    
+                </ul>
+            </nav>
+            <h2> Shan-Dav Readability Score </h2>
+        </div>
+ 
+        <div class="jumbotron">
+            <h3>Users</h3>
+            
+            <!--<p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a> 
+            </p> -->
+            <button id="btnGetUsers" class="btn btn-lg btn-primary " type="button">Show Users</button>
+
+        </div>
+ 
+       <ul id="lst_users"> </ul>
+
+
+        <footer class="footer">
+            <p>&copy; Shan-Dav @ BIT</p>
+        </footer>
+ 
+    </div>
+
+
+    <script type="text/javascript">
+
+        var populateList = function(lstId, usersArr){
+            var lst = $('#'+lstId);
+            lst.children().remove();
+            for (var li in usersArr){
+                lst.append('<li><a href="/user/' + usersArr[li] +  '"><span class="">' + usersArr[li] +' </span></a></li>');
+            }
+            
+        }
+        $(function() {
+            $('#btnGetUsers').click(function() {
+                $.ajax({
+                    url: '/readability/api1.0/get_users',
+                    //data: $('form').serialize(),
+                    type: 'GET',
+                    success: function(response) {
+                        populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+        
+
+		var btn = document.getElementById('get_score');
+		btn.onClick = function(){
+			alert('getting readability');
+		}
+	</script>
+	 
+</body>
+ 
+</html>

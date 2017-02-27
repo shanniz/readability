@@ -1,0 +1,51 @@
+
+FEATURES
+
++Textual Features
+
+-words
+-char_count
+-word_count
+-sentence_count
+-syllable_count
+-complexwords_count
+-avg_words_p_sentence
+
++Learner's Profile Features
+
+-learnerVocabulary
+-familiarTextWords
+-unfamiliarTextWords
+
+-learnerGrammar
+-familiarTextGrammar
+-unfamiliarTextGrammar
+
+
+
+readabilityScore = (len(self.familiarTextWords) / self.analyzedVars['word_cnt'] * 10) + self.analyzedVars['syllable_cnt']/ self.analyzedVars['word_cnt'] 
+
+
+
+Questions:
+Which features and how much weight for them should we use in the formula to get a reasonable readability score w.r.t to a given learner profile and the given text?
+
+
+
+User Model
+
+	+Vocabulary (JSON)
+		word - POS
+	+Grammar Strcutues (JSON)
+		['NNP', 'VBZ', 'VBG', 'DT', 'JJ', 'NN', '.']
+
+
+
+Text Model
+
+	+Vocabulary (JSON)
+		word - POS
+	+Grammar Strcutues (JSON)
+		['NNP', 'VBZ', 'VBG', 'DT', 'JJ', 'NN', '.']
+
+

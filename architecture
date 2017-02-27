@@ -1,0 +1,30 @@
+
+
+
+Class UserModel
+	generateModelFromText(text, ModelFile):
+	
+	getFamiliarWords(userModel, textModel):
+	
+	
+
+
+
+
+User Model
+
+	+Vocabulary (JSON)
+		word - POS
+	+Grammar Strcutues (JSON)
+		['NNP', 'VBZ', 'VBG', 'DT', 'JJ', 'NN', '.']
+
+
+
+Text Model
+
+	+Vocabulary (JSON)
+		word - POS
+	+Grammar Strcutues (JSON)
+		['NNP', 'VBZ', 'VBG', 'DT', 'JJ', 'NN', '.']
+
+
