@@ -1,0 +1,14 @@
+
+div.scrollWrapper{
+
+  height:300px;
+  overflow:scroll;
+}
+
+#ex1Slider .slider-selection {
+	background: #BABABA;
+}
+
+#range_ease_threshold {
+	    width: 25%;
+}

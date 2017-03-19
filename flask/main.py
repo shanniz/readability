@@ -1,3 +1,4 @@
+import json
 import sys
 modPath='/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/'
 sys.path.append(modPath)
@@ -14,6 +15,7 @@ import re
 
 from grammarStructure import GrammarStructure
 from utilities import utilities
+from helpers import Struct, helpers
 from shanDavReadability import Readability
 
 
@@ -32,7 +34,7 @@ mysql.init_app(app)
 conn = mysql.connect()
 cursor = conn.cursor()
 
-def getReadability(username, text):
+def getReadability(username, text, easeThreshold=5.0):
 	userModelPath=modPath+'profiles/'+username
 	testText = ['text1.txt', 'A grand plan.txt']
 	if text == '':
@@ -54,7 +56,11 @@ def getReadability(username, text):
 	rd.setLearnerVocabulary(learnerVocab, familiarWords, difficultWords)
 	rd.setLearnerGrammar(learnerGrammar, familiarGrammar, unfamiliarGrammar)
 
-	return 'Dav-Shan Text Difficulty Score (familiar vocabulary): '+ str(rd.shanDav(True)), learnerVocab, learnerGrammar
+	score = rd.shanDav(retDifficulty = True)
+	level = "Easy"
+	if score>easeThreshold:
+		level = 'Difficult'
+	return score, learnerVocab, learnerGrammar, level
 
 #def createUser():
 #	cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
@@ -63,7 +69,6 @@ def getReadability(username, text):
 #	    return json.dumps({'message':'User created successfully !'})
 #	else:
 #	    return json.dumps({'error':str(data[0])})
-
 
 tasks = [
     {
@@ -82,8 +87,12 @@ tasks = [
 
 @app.route("/")
 def landing():
-	return render_template('index.html')
+	return render_template('main.html')
     #return "Hello World!"
+
+@app.route("/index")
+def index():
+	return render_template('index.html')
 
 @app.route("/main")
 def main():
@@ -151,20 +160,29 @@ def get_readability():
 
 @app.route('/readability/api1.0/user_readability', methods=['POST'])
 def user_readability():
-    print request.form['user_name']; return jsonify({'score': getReadability(request.form['user_name'], request.form['test_text'])})
+    #print request.form['user_name']; 
+    return jsonify({'score': getReadability(request.form['user_name'], request.form['test_text'], float (request.form['range_ease_threshold']) ) })
 
 @app.route('/readability/api1.0/get_users', methods=['GET'])
 def get_users():
 	with open(modPath+'profiles/users') as fp: users = fp.read().splitlines()
 	return jsonify({'users': users})
 
-
+@app.route('/readability/api1.0/config/set', methods=['POST'])
+def set_config():
+	jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig1.json')
+	jsonObj['easeThreshold'] = float (request.form['range_ease_threshold'])
+	helpers.save_JSON(jsonObj, '/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig1.json')
+	return "success!"
 
 @app.route('/user/<username>')
 def show_user_profile(username):
-	readability, learnerVocab, learnerGrammar = getReadability(username, ''); #print learnerGrammar
-    
-	return render_template('user.html', username=username, readability=readability, learnerVocab=learnerVocab, learnerGrammar=learnerGrammar)
+	jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig.json')
+	conf = Struct(**jsonObj)
+
+	readability, learnerVocab, learnerGrammar, level = getReadability(username, '', conf.easeThreshold); #print learnerGrammar
+	return render_template('userSub.html', username=username, readability=readability, learnerVocab=learnerVocab, learnerGrammar=learnerGrammar
+	, config=conf)
 
 
 if __name__ == '__main__':

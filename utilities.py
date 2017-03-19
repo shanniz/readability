@@ -72,19 +72,16 @@ class utilities:
             syllableCount += syllables_en.count(word)
         return syllableCount
 
-    #This method must be enhanced. At the moment it only
-    #considers the number of syllables in a word.
-    #This often results in that too many complex words are detected.
-    def count_complex_words(self, text=''):
+
+    #complex words count based on number of characters in the word
+    def count_complex_words_char_based(self, text, minChars = 9):
         words = self.get_words(text)
         sentences = self.get_sentences(text)
         complex_words = 0
         found = False
-        cur_word = []
         
         for word in words:          
-            cur_word.append(word)
-            if self.count_syllables(cur_word)>= 3:
+            if self.get_char_count([word])>= minChars:
                 
                 #Checking proper nouns. If a word starts with a capital letter
                 #and is NOT at the beginning of a sentence we don't add it
@@ -100,6 +97,37 @@ class utilities:
                         complex_words += 1
                         found = False
                     
-            cur_word.remove(word)
+        return complex_words
+
+
+    #This method must be enhanced. At the moment it only
+    #considers the number of syllables in a word.
+    #This often results in that too many complex words are detected.
+    def count_complex_words(self, text):
+        words = self.get_words(text)
+        sentences = self.get_sentences(text)
+        complex_words = 0
+        found = False
+        #cur_word = []
+        
+        for word in words:          
+            #cur_word.append(word)
+            if self.count_syllables(word)>= 3:
+                
+                #Checking proper nouns. If a word starts with a capital letter
+                #and is NOT at the beginning of a sentence we don't add it
+                #as a complex word.
+                if not(word[0].isupper()):
+                    complex_words += 1
+                else:
+                    for sentence in sentences:
+                        if str(sentence).startswith(word):
+                            found = True
+                            break
+                    if found: 
+                        complex_words += 1
+                        found = False
+                    
+            #cur_word.remove(word)
         return complex_words
 

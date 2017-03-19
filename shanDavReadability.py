@@ -11,14 +11,21 @@ from utilities import utilities
 #from textProcess import TextProcessor
 
 
+#Text Features:
+#idioms, phrases, pronunciation, 
+
+#Profile Features:
+#
+
 
 class Readability:
     analyzedVars = {}
     utils = {}
+    
+    #user profile features
     learnerVocabulary = []
     familiarTextWords = []
     unfamiliarTextWords = []
-
     learnerGrammar = []
     familiarTextGrammar = []
     unfamiliarTextGrammar = []
@@ -57,8 +64,7 @@ class Readability:
         
         avg_words_p_sentence = word_count / sentence_count
 
-        #Grammar Structures of Sentences
-
+		#Text Features
         self.analyzedVars = {
             'words': words,
             'char_cnt': float(char_count),

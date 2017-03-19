@@ -1,0 +1,165 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+ 
+        <div class="jumbotron">
+            <h3 id="user_name"> {% if username %} {{ username }}  {% endif %} </h3>
+            <h3 id="readability_score"> Dav-Shan Text Readability Ease Score (familiar vocabulary):  {{readability}} </h3>
+            <p id="p_difficulty_level"> 
+                Difficulty Level: 
+                {% if readability>config.easeThreshold %}
+                    Easy
+                {% else %}
+                    Difficult
+                {% endif %} 
+            </p>
+        </div>
+
+        <div> 
+            
+        </div>
+
+ 
+        <div>
+            <form class=""> 
+                <input type="range" id="range_ease_threshold" name="range_ease_threshold" min="0" max="10" step="0.1" value="{{ config.easeThreshold }}">
+                <label id="lbl_ease_threshold" > Ease Threshold: {{ config.easeThreshold }} </label>
+
+                <input type="hidden" name="user_name" value={{ username }} />
+                <textarea rows="7" cols="83" name="test_text" id="test_text" > We are close to wrapping up our 10 week Rails Course. This week we will cover a handful of topics commonly encountered in Rails projects. We then wrap up with part 2 of our Reddit on Rails exercise! </textarea>
+                <br><br>
+                <button id="get_score" class="btn  btn-primary ">Get readability</button> 
+                <input type="button" id="update_config" class="btn" value="Save Configuration"></input>    
+            </form>         
+        </div>
+      
+
+        <div > 
+            <hr> 
+        </div>
+       
+        <div>
+            <h3>Vocabulary</h3>
+
+            <div class="scrollWrapper">
+                <table class="table table-hover">
+                    <thead >
+                        <tr>
+                            <th>SNO</th>
+                            <th>Word</th>
+                            <th>POS<th>
+                        </tr>
+                    </thead>
+                    <tbody height="90px">
+                        {% set foo=0 %}
+                        {% for word in learnerVocab %}
+                            {% set foo = foo+1 %}
+                            <tr>
+                            <td>{{foo }}</td>
+                            <td>{{ word }}</td>
+                            <td></td>
+                            </tr>
+                          {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div > <hr> </div>
+            
+            <h3>Grammar</h3>
+            <div class="scrollWrapper">
+                <table class="table table-hover">
+                    <thead >
+                        <tr>
+                            <th>SNO</th>
+                            <th>Grammar Structure</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set foo=0 %}
+                        {% for structure in learnerGrammar %}
+                           {% set foo = foo+1 %}
+                            <tr>
+                            <td>{{foo }}</td>
+                            <td>{{structure}}</td>
+                            
+                            </tr>
+                          {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    <script type="text/javascript">
+
+        document.getElementById('range_ease_threshold').onchange = function (e) {
+            //console.log(e.target);
+            document.getElementById('lbl_ease_threshold').innerHTML = "Ease Threshold = " + e.target.value; 
+            //document.getElementById('textInput').value=e.target.value; 
+        }
+
+        var populateList = function(lstId, usersArr){
+            var lst = $('#'+lstId);
+            lst.children().remove();
+            for (var li in usersArr){
+                lst.append('<li><a href="/user/messages"><span class="tab">' + usersArr[li] +' </span></a></li>');
+            }
+            
+        }
+
+        $(function () {
+            //$('form').bind('click', function (event) {
+            $('form').on('submit', function (event) {
+
+              event.preventDefault();// using this page stop being refreshing 
+
+              $.ajax({
+                type: 'POST',
+                url: '/readability/api1.0/user_readability',
+                data: $('form').serialize(),
+                success: function(response) {
+                        console.log(response);
+                        $('#readability_score').text("Dav-Shan Text Readability Ease Score (familiar vocabulary)" + response.score[0]);
+                        $('#p_difficulty_level').text("Difficulty Level : " + response.score[3]  )
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+              });
+
+            });
+        });
+
+        
+        $(function() {
+            $('#update_config').click(function() {
+                $.ajax({
+                    url: '/readability/api1.0/config/set',
+                    data: $('form').serialize(),
+                    //data: $('#test_text')[0].value,
+                    type: 'POST',
+                    success: function(response) {
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        }); 
+        
+
+
+		var btn = document.getElementById('get_score');
+		btn.onClick = function(){
+			alert('getting readability');
+		}
+	</script>
+	 
+
+
+{% endblock %}

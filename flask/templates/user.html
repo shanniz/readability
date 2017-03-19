@@ -6,8 +6,8 @@
     <title>Shan-Dav Readability - User</title>
  
     <script type="text/javascript" src="../static/js/jquery-3.1.1.min.js"></script>
+    <link href="../static/main.css" rel="stylesheet">
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- 
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
  
  
@@ -32,66 +32,81 @@
  
         <div class="jumbotron">
             <h3 id="user_name"> {% if username %} {{ username }}  {% endif %} </h3>
-            <h3 id="readability_score">  {{readability}} </h3>
+            <h3 id="readability_score"> Dav-Shan Text Readability Ease Score (familiar vocabulary):  {{readability}} </h3>
+            <p> 
+                Difficulty Level: 
+                {% if readability>5 %}
+                    Easy
+                {% else %}
+                    Difficult
+                {% endif %} 
+            </p>
         </div>
  
         <div>
             <form class=""> 
                 <input type="hidden" name="user_name" value={{ username }} />
-                <textarea rows="7" cols="70" name="test_text" id="test_text" > </textarea>
+                <textarea rows="7" cols="83" name="test_text" id="test_text" > </textarea>
                 <br><br>
                 <button id="get_score" class="btn  btn-primary ">Get readability</button>    
             </form>
             
         </div>
       
+
+        <div > <hr> </div>
+       
         <div>
             <h3>Vocabulary</h3>
-            <table class="table table-hover">
-                <thead >
-                    <tr>
-                        <th>SNO</th>
-                        <th>Word</th>
-                        <th>POS<th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% set foo=0 %}
-                    {% for word in learnerVocab %}
-                        {% set foo = foo+1 %}
+
+            <div class="scrollWrapper">
+                <table class="table table-hover">
+                    <thead >
                         <tr>
-                        <td>{{foo }}</td>
-                        <td>{{ word }}</td>
-                        <td></td>
+                            <th>SNO</th>
+                            <th>Word</th>
+                            <th>POS<th>
                         </tr>
-                      {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody height="90px">
+                        {% set foo=0 %}
+                        {% for word in learnerVocab %}
+                            {% set foo = foo+1 %}
+                            <tr>
+                            <td>{{foo }}</td>
+                            <td>{{ word }}</td>
+                            <td></td>
+                            </tr>
+                          {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             
-
-            <br>
+            <div > <hr> </div>
+            
             <h3>Grammar</h3>
-
-            <table class="table table-hover">
-                <thead >
-                    <tr>
-                        <th>SNO</th>
-                        <th>Grammar Structure</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% set foo=0 %}
-                    {% for structure in learnerGrammar %}
-                       {% set foo = foo+1 %}
+            <div class="scrollWrapper">
+                <table class="table table-hover">
+                    <thead >
                         <tr>
-                        <td>{{foo }}</td>
-                        <td>{{structure}}</td>
-                        
+                            <th>SNO</th>
+                            <th>Grammar Structure</th>
+                            
                         </tr>
-                      {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% set foo=0 %}
+                        {% for structure in learnerGrammar %}
+                           {% set foo = foo+1 %}
+                            <tr>
+                            <td>{{foo }}</td>
+                            <td>{{structure}}</td>
+                            
+                            </tr>
+                          {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <footer class="footer">
