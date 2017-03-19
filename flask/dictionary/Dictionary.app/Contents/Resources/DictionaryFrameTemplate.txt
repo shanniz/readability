@@ -1,4 +1,0 @@
-	<dic bundle-id="%@" name="%@" name-italic="%@">
-		<iframe class="dictionary_frame" name="%@" title="%@" height="0" width="100%%" frameborder="0"
-				tabindex="-1"  onload="this.needToResize='yes'" ></iframe>
-	</dic>
