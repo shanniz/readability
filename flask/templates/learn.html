@@ -1,0 +1,142 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+ 
+        <div class="jumbotron">
+            <h3 id="user_name"> {% if username %} {{ username }}  {% endif %} </h3>
+        </div>
+
+ 
+        <div>
+            <form class=""> 
+               
+                <!-- <input type="hidden" name="user_name" value={{ username }} /> -->
+                <span class="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Learner
+                      <span class="caret"></span></button>
+
+                      <ul id="lst_users" class="dropdown-menu">
+                        
+                      </ul>
+
+                      
+                </span> 
+
+                 <span class="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Learner Level
+                      <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Level 1</a></li>
+                        <li><a href="#">Level 2</a></li>
+                        <li><a href="#">Level 3</a></li>
+                      </ul>
+                </span> 
+                <br>
+                <label> New Text Learned</label>
+                <textarea rows="7" cols="83" name="test_text" id="test_text" > We are close to wrapping up our 10 week Rails Course. This week we will cover a handful of topics commonly encountered in Rails projects. We then wrap up with part 2 of our Reddit on Rails exercise! </textarea>
+                <br><br>
+                <button id="get_score" class="btn  btn-primary ">Update Learner Profile</button> 
+                
+            </form>         
+        </div>
+      
+
+        <div > 
+            <hr> 
+        </div>
+       
+        <div>
+            <form class="form_update_vocab">
+                <h3>Update Vocabulary</h3>
+                <input type="text" name="new_word">
+                <input type="submit" name="">
+            </form>
+            
+
+            
+             <form class="form_update_grammar">
+                <h3>Update Vocabulary</h3>
+                <input type="text" name="new_word">
+                <input type="submit" name="">
+            </form>          
+
+        </div>
+
+
+    <script type="text/javascript">
+
+
+        var populateList = function(lstId, usersArr){
+            var lst = $('#'+lstId);
+            lst.children().remove();
+            for (var li in usersArr){
+                lst.append('<li><a href="/user/' + usersArr[li] +  '"><span class="">' + usersArr[li] +' </span></a></li>');
+            }
+            
+        }
+        $(function() {
+            
+            $.ajax({
+                url: '/readability/api1.0/get_users',
+                //data: $('form').serialize(),
+                type: 'GET',
+                success: function(response) {
+                    populateList('lst_users', response.users);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+            
+        });
+
+
+        $(function () {
+            //$('form').bind('click', function (event) {
+            $('form').on('submit', function (event) {
+
+              event.preventDefault();// using this page stop being refreshing 
+
+              $.ajax({
+                type: 'POST',
+                url: '/readability/api1.0/user_readability',
+                data: $('form').serialize(),
+                success: function(response) {
+                        console.log(response);
+                        $('#readability_score').text("Dav-Shan Text Readability Ease Score (familiar vocabulary)" + response.score[0]);
+                        $('#p_difficulty_level').text("Difficulty Level : " + response.score[3]  )
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+              });
+
+            });
+        });
+
+        
+        $(function() {
+            $('#update_config').click(function() {
+                $.ajax({
+                    url: '/readability/api1.0/config/set',
+                    data: $('form').serialize(),
+                    //data: $('#test_text')[0].value,
+                    type: 'POST',
+                    success: function(response) {
+                        //populateList('lst_users', response.users);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        }); 
+        
+
+	</script>
+	 
+
+
+{% endblock %}

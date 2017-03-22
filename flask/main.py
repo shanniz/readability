@@ -36,7 +36,8 @@ cursor = conn.cursor()
 
 def getReadability(username, text, easeThreshold=5.0):
 	userModelPath=modPath+'profiles/'+username
-	testText = ['text1.txt', 'A grand plan.txt']
+	#testText = ['text1.txt', 'A grand plan.txt']
+	testText = ['level3/text1.txt', 'level2/Jane with Mom.txt', 'level1/A grand plan.txt']
 	if text == '':
 		text = open(modPath+'texts/'+testText[0], 'r').read().lower()
 	regexAlpha = re.compile('[^a-z.!]')
@@ -51,16 +52,26 @@ def getReadability(username, text, easeThreshold=5.0):
 	rd = Readability(text, utilities())
 	utils = utilities()
 	familiarWords = utils.common_elements( rd.analyzedVars['words'], learnerVocab)
-	difficultWords = utils.unfamiliarWords( rd.analyzedVars['words'], learnerVocab)
+	unfamiliarWords = utils.unfamiliarWords( rd.analyzedVars['words'], learnerVocab)
 	familiarGrammar, unfamiliarGrammar = utils.common_grammar( posList, learnerGrammar)
-	rd.setLearnerVocabulary(learnerVocab, familiarWords, difficultWords)
+	rd.setLearnerVocabulary(learnerVocab, familiarWords, unfamiliarWords)
 	rd.setLearnerGrammar(learnerGrammar, familiarGrammar, unfamiliarGrammar)
 
 	score = rd.shanDav(retDifficulty = True)
 	level = "Easy"
 	if score>easeThreshold:
 		level = 'Difficult'
-	return score, learnerVocab, learnerGrammar, level
+	readability = {
+		'score': score, 
+		'level': level, 
+		'learnerVocab': learnerVocab, 
+		'learnerGrammar': learnerGrammar, 
+		'unfamiliarWords': unfamiliarWords,
+		'unfamiliarGrammar': unfamiliarGrammar
+
+	}
+
+	return  score, learnerVocab, learnerGrammar, level
 
 #def createUser():
 #	cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
@@ -154,10 +165,6 @@ def get_tasks():
     return jsonify({'tasks': tasks})
 
 
-@app.route('/readability/api1.0/get_readability', methods=['GET'])
-def get_readability():
-    return jsonify({'score': getReadability()})
-
 @app.route('/readability/api1.0/user_readability', methods=['POST'])
 def user_readability():
     #print request.form['user_name']; 
@@ -170,20 +177,33 @@ def get_users():
 
 @app.route('/readability/api1.0/config/set', methods=['POST'])
 def set_config():
-	jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig1.json')
+	jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig.json')
 	jsonObj['easeThreshold'] = float (request.form['range_ease_threshold'])
-	helpers.save_JSON(jsonObj, '/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig1.json')
+	helpers.save_JSON(jsonObj, '/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig.json')
 	return "success!"
 
 @app.route('/user/<username>')
 def show_user_profile(username):
 	jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig.json')
 	conf = Struct(**jsonObj)
-
+	#'level': level, 'learnerVocab': learnerVocab, 'learnerGrammar': learnerGrammar, 
+	#'unfamiliarWords': unfamiliarWords,		'unfamiliarGrammar': unfamiliarGrammar
 	readability, learnerVocab, learnerGrammar, level = getReadability(username, '', conf.easeThreshold); #print learnerGrammar
-	return render_template('userSub.html', username=username, readability=readability, learnerVocab=learnerVocab, learnerGrammar=learnerGrammar
+	#readability = getReadability(username, '', conf.easeThreshold);
+	return render_template('userSub.html', username=username, readability=readability, learnerVocab=learnerVocab, 
+		learnerGrammar=learnerGrammar
 	, config=conf)
 
+
+@app.route('/user/learn/')
+def show_user_learn():
+	#jsonObj = helpers.read_JSON('/home/shan/projects/davids/research/programs/PersonalReadbilityCalculation/flask/readabilityConfig.json')
+	#conf = Struct(**jsonObj)
+	#'level': level, 'learnerVocab': learnerVocab, 'learnerGrammar': learnerGrammar, 
+	#'unfamiliarWords': unfamiliarWords,		'unfamiliarGrammar': unfamiliarGrammar
+	#readability, learnerVocab, learnerGrammar, level = getReadability(username, '', conf.easeThreshold); #print learnerGrammar
+	#readability = getReadability(username, '', conf.easeThreshold);
+	return render_template('learn.html') # , username=username)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -7,25 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <link href="../static/main.css" rel="stylesheet">
-    <script type="text/javascript" src="../static/js/jquery-3.1.1.min.js"></script>
+    <link href="http://127.0.0.1:5000/static/main.css" rel="stylesheet">
+
+    <script type="text/javascript" src="http://127.0.0.1:5000/static/js/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     
 </head>
  
 <body>
  
+
     <div class="container">
         
-<nav>
-                <ul class="nav nav-pills ">
-                    <li role="presentation" class="active"><a href="#">Home</a> </li>
-                    <!--<li role="presentation"><a href="#">Users</a> </li>-->
-                    <!-- <li role="presentation"><a href="showReadability">Readability</a> </li> -->
-                    <li role="presentation"><a href="showSignIn">Signin</a> </li>
-                    <li role="presentation"><a href="showSignUp">Signup</a> </li>
-                    
-                </ul>
-            </nav>
+      <nav>
+          <ul class="nav nav-pills ">
+              <li role="presentation" class="active"><a href="http://127.0.0.1:5000">Home</a> </li>
+              <li role="presentation" ><a href="http://127.0.0.1:5000/user/learn/">Learn</a> </li>
+              <!--<li role="presentation"><a href="#">Users</a> </li>-->
+              <!-- <li role="presentation"><a href="showReadability">Readability</a> </li> -->
+              <!-- <li role="presentation"><a href="showLevels">Levels</a> </li>-->
+                
+              
+              
+              <li role="presentation"><a href="http://127.0.0.1:5000/showSignIn">Signin</a> </li>
+              <li role="presentation"><a href="http://127.0.0.1:5000/showSignUp">Signup</a> </li>
+          </ul>
+      </nav>
 
             <!--
         <nav class="navbar navbar-inverse" role="navigation">
@@ -78,6 +86,37 @@
         </footer>
 
     </div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+  var trigger = $('.hamburger'),
+      overlay = $('.overlay'),
+     isClosed = false;
+
+    trigger.click(function () {
+      hamburger_cross();      
+    });
+
+    function hamburger_cross() {
+
+      if (isClosed == true) {          
+        overlay.hide();
+        trigger.removeClass('is-open');
+        trigger.addClass('is-closed');
+        isClosed = false;
+      } else {   
+        overlay.show();
+        trigger.removeClass('is-closed');
+        trigger.addClass('is-open');
+        isClosed = true;
+      }
+  }
+  
+  $('[data-toggle="offcanvas"]').click(function () {
+        $('#wrapper').toggleClass('toggled');
+  });  
+});
+</script>
 
 </body>
  

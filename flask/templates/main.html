@@ -34,12 +34,15 @@
             <h3>Users</h3>
             
             <!--<p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a> 
-            </p> -->
+            </p> 
             <button id="btnGetUsers" class="btn btn-lg btn-primary " type="button">Show Users</button>
-
+            -->
         </div>
- 
-       <ul id="lst_users"> </ul>
+        
+        <div>
+            <ul id="lst_users"> </ul>
+        </div>
+       
 
 
         <footer class="footer">
@@ -60,7 +63,7 @@
             
         }
         $(function() {
-            $('#btnGetUsers').click(function() {
+            //$('#btnGetUsers').click(function() {
                 $.ajax({
                     url: '/readability/api1.0/get_users',
                     //data: $('form').serialize(),
@@ -72,7 +75,7 @@
                         console.log(error);
                     }
                 });
-            });
+            //});
         });
         
 

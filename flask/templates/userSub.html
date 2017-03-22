@@ -27,10 +27,24 @@
                 <label id="lbl_ease_threshold" > Ease Threshold: {{ config.easeThreshold }} </label>
 
                 <input type="hidden" name="user_name" value={{ username }} />
+                
+                
+                 <div class="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Level
+                      <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Level 1</a></li>
+                        <li><a href="#">Level 2</a></li>
+                        <li><a href="#">Level 3</a></li>
+                      </ul>
+
+                </div> 
+
+
                 <textarea rows="7" cols="83" name="test_text" id="test_text" > We are close to wrapping up our 10 week Rails Course. This week we will cover a handful of topics commonly encountered in Rails projects. We then wrap up with part 2 of our Reddit on Rails exercise! </textarea>
                 <br><br>
                 <button id="get_score" class="btn  btn-primary ">Get readability</button> 
-                <input type="button" id="update_config" class="btn" value="Save Configuration"></input>    
+                <input type="button" id="update_config" class="btn" value="Save Settings"></input>    
             </form>         
         </div>
       
@@ -95,6 +109,7 @@
 
     <script type="text/javascript">
 
+   
         document.getElementById('range_ease_threshold').onchange = function (e) {
             //console.log(e.target);
             document.getElementById('lbl_ease_threshold').innerHTML = "Ease Threshold = " + e.target.value; 
